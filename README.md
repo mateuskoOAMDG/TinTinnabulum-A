@@ -12,10 +12,10 @@
 ## Doorbell control
 > The bell is set with four buttons, you can set which melody will be used for ringing.
 > The buttons are:
-> * "<" - Previous file / Previous folder
-> * ">" - Next file / Next folder
-> * "M" - Playmode / Test play
-> * "O" - Stop, Cancel / Save settings
+> * "**<**" - Previous file / Previous folder
+> * "**>**" - Next file / Next folder
+> * "**M**" - Playmode / Test play
+> * "**O**" - Stop, Cancel / Save settings
 
 
 Each button has two functions:
@@ -24,9 +24,25 @@ Each button has two functions:
 
 Some functions are available by pressing two buttons at the same time:
 
-> * "M" + "<" - Volume down
-> * "M" + ">" - Volume up
-> * "M" + "O" - Reset and
+> * "**M**" + "**<**" - Volume down
+> * "**M**" + "**>**" - Volume up
+> * "**M**" + "**O**" - Reset the doorbell and set the default settings
+
+## Ringing by button or voltage signal
+
+Ringing can be triggered in two ways:
+* by shorting the control wires - with an external button
+* by applying a voltage signal to the control wires
+
+According to the chosen method, you must to set the DIP-switches on the circuit board of the doorbell.
+
+You also set the size of the control voltage with the switch:
+* 4 V - 10 V
+* 7 V - 20 V
+The required current is 3 - 10 mA
+
+
+
 
 
 
