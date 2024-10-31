@@ -79,20 +79,23 @@ The main sketch is in the Arduino folder and the libraries are in the lib direct
 
 ### Uploading the program to the microcontroller
 
-The Attiny 1624 microcontroller is programmed via the UPDI interface. There are pin headers on the printed circuit board where the programmer is connected.
+The Attiny 1624 microcontroller is programmed via the UPDI interface. There are pin headers on the printed circuit board where the programmer is connected. PCB must be powered during programming.
 
-![obrázok](https://github.com/user-attachments/assets/aec5c02e-9251-4e64-bd02-750b3ac4fa84)
+![obrázok](https://github.com/user-attachments/assets/64cff65f-db5d-4a3a-a12f-fa6ba589f899)
+
 
 >You can make a suitable jtag2updi programmer from an Arduino Nano. Instructions can be found at:
->![obrázok](https://github.com/user-attachments/assets/83673158-ce7a-4c45-9154-d9831187b445)
+> https://daumemo.com/diy-updi-usb-programmer-which-can-be-made-with-cheap-hardware/
 
-https://daumemo.com/diy-updi-usb-programmer-which-can-be-made-with-cheap-hardware/
+![obrázok](https://github.com/user-attachments/assets/83673158-ce7a-4c45-9154-d9831187b445)
+
 
 ## Photos
 
 > Home made PCBs
 > Top - Top panel buttons PcB
 > Bottom - Main PCB
+
 ![obrázok](https://github.com/user-attachments/assets/bc028b53-51cd-477b-b0b5-5a6ba27f9e7a)
 
 
