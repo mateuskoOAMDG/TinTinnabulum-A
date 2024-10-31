@@ -89,7 +89,7 @@ The Attiny 1624 microcontroller is programmed via the UPDI interface. There are 
 ![obrázok](https://github.com/user-attachments/assets/64cff65f-db5d-4a3a-a12f-fa6ba589f899)
 
 
->You can make a suitable jtag2updi programmer from an Arduino Nano. Instructions can be found at:
+> You can make a suitable jtag2updi programmer from an Arduino Nano. Instructions can be found at:
 > https://daumemo.com/diy-updi-usb-programmer-which-can-be-made-with-cheap-hardware/
 
 ![obrázok](https://github.com/user-attachments/assets/83673158-ce7a-4c45-9154-d9831187b445)
@@ -98,8 +98,8 @@ The Attiny 1624 microcontroller is programmed via the UPDI interface. There are 
 ## Photos
 
 > Home made PCBs
-> Top - Top panel buttons PcB
-> Bottom - Main PCB
+> * Top - Top panel PCB (buttons)
+> * Bottom - Main PCB
 
 ![obrázok](https://github.com/user-attachments/assets/bc028b53-51cd-477b-b0b5-5a6ba27f9e7a)
 
