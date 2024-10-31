@@ -48,6 +48,8 @@ You also set the size of the AC or DC control voltage with the switch:
 * 4 V - 10 V
 * 7 V - 20 V
 
+Observe correct polarity when using DC voltage
+
 The required current flowing through the control wires is 3 - 10 mA.
 
 ## Ringtones
@@ -64,13 +66,20 @@ There must also be folder 51 on the microSD card with mp3 sound files of notific
 
 ## Photos
 
-Assembled PCB
+> Assembled PCB
 
-![obrázok](https://github.com/user-attachments/assets/ec359238-3393-4c8b-96b8-2ad5233b36a7)
+![obrázok](https://github.com/user-attachments/assets/8f680a6e-c2ca-4be7-8d0d-55b581fdfd7d)
 
-Rear panel with connectors for button or voltage signal and power supply
+
+> Rear panel with connectors for button or voltage signal and power supply
 
 ![obrázok](https://github.com/user-attachments/assets/070a5b5c-7ca1-4f6b-9531-dc49c3dd3f07)
+
+
+
+> Buttons - top panel
+![obrázok](https://github.com/user-attachments/assets/64fe1e94-9d25-4d64-a116-491a40f98bfc)
+
 
 
 
