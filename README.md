@@ -114,7 +114,9 @@ The Attiny 1624 microcontroller is programmed via the UPDI interface. There are 
 
 ![obrázok](https://github.com/user-attachments/assets/64fe1e94-9d25-4d64-a116-491a40f98bfc)
 
+> PCB in the speaker box Genius SP-HF280 
 
+![obrázok](https://github.com/user-attachments/assets/060cb161-d37e-4030-8420-b0b94abe4c10)
 
 
 
