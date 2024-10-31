@@ -1,0 +1,21 @@
+BUG - corrupted Serial communication
+    Done: Set cpu speed in platformio.ini to 20000000L
+    Question: How to set fuse to other MCU freauency?
+
+    AI writed: upload_protocol = custom
+            upload_command = avrdude -p attiny1624 -c your_programmer -U lfuse:w:0xXX:m -U hfuse:w:0xXX:m -U efuse:w:0xXX:m  ; Replace with your fuse values and programmer
+
+2024/10/28 - "Next File" programmed and tested - beta :)
+            
+
+2024/10/29 - 
+    "Previous File", "Previous Folder", "Next Folder", "Test"
+    - BUGS:
+        - nie vždy bliká edit blink
+        - dorobiť play blink
+        - reset zamŕza
+        - dorobiť save, load - EEPROM
+
+2024/10/31
+    - dorobené save, load, card insert/remove   
+    - beta :)     
