@@ -64,6 +64,21 @@ Ringtone file names must be in the format 001.mp3, 002.mp3, etc. up to 255.mp3. 
 
 There must also be folder 51 on the microSD card with mp3 sound files of notifications. Notifications are played while setting the doorbell with the buttons.
 
+## Software
+The doorbell software was created in the **PlatformIO** using Arduino framework for the **ATTiny1624** microcontroller.
+It consists of the main file main.cpp and three external libraries:
+
+* Button - the Button library provides button operation including software debouncing
+* Led Blink - LED Blink library provides asynchronous control of LED flashing according to control commands
+* DFRobotDFPlayerMini - Software control of the DFR0299 player via a serial interface
+  
+> The program can also be compiled and uploaded in the **Arduino IDE 2**.
+> The **MegaTinyCore** package by Spence Konde must be installed in the Arduino IDE first. It must be entered in the field in the Preferences: "Additional boards manager URLs address" *http://drazzy.com/package_drazzy.com_index.json*
+
+The main sketch is in the Arduino folder and the libraries are in the lib directory - these must be uploaded to the Arduino libraries directory
+
+
+
 ## Photos
 
 > Assembled PCB
@@ -78,6 +93,7 @@ There must also be folder 51 on the microSD card with mp3 sound files of notific
 
 
 > Buttons - top panel
+
 ![obrázok](https://github.com/user-attachments/assets/64fe1e94-9d25-4d64-a116-491a40f98bfc)
 
 
