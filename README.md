@@ -36,10 +36,12 @@ Ringing can be triggered in two ways:
 
 According to the chosen method, you must to set the DIP-switches on the circuit board of the doorbell.
 
-You also set the size of the control voltage with the switch:
+You also set the size of the AC or DC control voltage with the switch:
 * 4 V - 10 V
 * 7 V - 20 V
 The required current is 3 - 10 mA
+
+
 
 
 
