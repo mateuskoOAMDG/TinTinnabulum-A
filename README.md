@@ -39,7 +39,22 @@ According to the chosen method, you must to set the DIP-switches on the circuit 
 You also set the size of the AC or DC control voltage with the switch:
 * 4 V - 10 V
 * 7 V - 20 V
-The required current is 3 - 10 mA
+The required current flowing through the control wires is 3 - 10 mA.
+
+## Ringtones
+
+Ringtones must be in an MP3 audio file. (Sampling rates (kHz): 8/11.025/12/16/22.05/24/32/44.1/48).
+
+The files are stored in folders on a micro SD card, which can have a maximum capacity of 32 GB and supports FAT16, FAT32 file system. The card is inserted in the slot of the player.
+
+You can upload files with ringtones to folders 01 to 09. 
+
+Ringtone file names must be in the format 001.mp3, 002.mp3, etc. up to 255.mp3. File names must form an uninterrupted sequence starting with 001.mp3
+
+There must also be folder 51 on the microSD card with mp3 sound files of announcements. Notifications are played while setting the doorbell with the buttons.
+
+
+
 
 
 
