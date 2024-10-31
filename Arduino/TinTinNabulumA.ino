@@ -1,6 +1,6 @@
 
 /// @name TinTinNabulum A.00.03
-/// @brief Melody doorbell with DFPlayer Mini DFR0299 and ATtiny1624 
+/// @brief Melodic doorbell with DFPlayer Mini DFR0299 and ATtiny1624 
 /// @date 2024/10/31
 /// @author m$o, mateusko.oamdg@outlook.com
  
@@ -145,7 +145,6 @@
     #define T(x)
     #define D(x)
     #define H(x)
-
 #endif
 
 
@@ -315,7 +314,7 @@ void setup() {
   };
   
   myDFPlayer.setTimeOut(500);
-  myDFPlayer.volume(25);
+  myDFPlayer.volume(DEFAULT_VOLUME);
   
   init_gong(); // initialize control variables
   if (!load()) {
