@@ -77,9 +77,24 @@ It consists of the main file main.cpp and three external libraries:
 
 The main sketch is in the Arduino folder and the libraries are in the lib directory - these must be uploaded to the Arduino libraries directory
 
+### Uploading the program to the microcontroller
 
+The Attiny 1624 microcontroller is programmed via the UPDI interface. There are pin headers on the printed circuit board where the programmer is connected.
+
+![obrázok](https://github.com/user-attachments/assets/aec5c02e-9251-4e64-bd02-750b3ac4fa84)
+
+>You can make a suitable jtag2updi programmer from an Arduino Nano. Instructions can be found at:
+>![obrázok](https://github.com/user-attachments/assets/83673158-ce7a-4c45-9154-d9831187b445)
+
+https://daumemo.com/diy-updi-usb-programmer-which-can-be-made-with-cheap-hardware/
 
 ## Photos
+
+> Home made PCBs
+> Top - Top panel buttons PcB
+> Bottom - Main PCB
+![obrázok](https://github.com/user-attachments/assets/bc028b53-51cd-477b-b0b5-5a6ba27f9e7a)
+
 
 > Assembled PCB
 
