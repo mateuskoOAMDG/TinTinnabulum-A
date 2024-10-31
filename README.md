@@ -2,7 +2,9 @@
 **The melodious doorbell s with DFPlayer Mini - DFR0299 and ATTiny1624 microcontroller**
 > TinTinNabulum A is a home melodic doorbell that rings by playing a melody.
 > Ringtones are stored on a microSD card and can be easily changed or supplemented.
+
 ## Features
+
 * Ability to store more than 2000 ringtones
 * Ability to divide ringtones into 9 separate folders
 * Possibility to start ringing with a connected button or a voltage signal from another source
@@ -10,8 +12,9 @@
 * DC power supply 9V (max. 1 A)
 
 ## Doorbell control
-> The bell is set with four buttons, you can set which melody will be used for ringing.
-> The buttons are:
+
+The bell is set with four buttons, you can set which melody will be used for ringing.
+The buttons are:
 > * "**<**" - Previous file / Previous folder
 > * "**>**" - Next file / Next folder
 > * "**M**" - Playmode / Test play
@@ -52,6 +55,8 @@ You can upload files with ringtones to folders 01 to 09.
 Ringtone file names must be in the format 001.mp3, 002.mp3, etc. up to 255.mp3. File names must form an uninterrupted sequence starting with 001.mp3
 
 There must also be folder 51 on the microSD card with mp3 sound files of announcements. Notifications are played while setting the doorbell with the buttons.
+
+
 
 
 
