@@ -7,6 +7,11 @@
 
 > TinTinNabulum A is a home melodic doorbell that rings by playing a melody.
 > Ringtones are stored on a microSD card and can be easily changed or supplemented.
+>
+> * MP3 Player: DFPlayer Mini **DFR0299**
+> * Microcontroller **ATTiny1624**
+> * Arduino project
+> * Source code for **PlatformIO** and for  **Arduino IDE 2**
 
 ## Features
 
