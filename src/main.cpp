@@ -1,6 +1,6 @@
 
 /// @name TinTinNabulum A.00.03
-/// @brief Melody doorbell with DFPlayer Mini DFR0299 and ATtiny1624 
+/// @brief Melodic doorbell with DFPlayer Mini DFR0299 and ATtiny1624 
 /// @date 2024/10/31
 /// @author m$o, mateusko.oamdg@outlook.com
  
@@ -8,7 +8,7 @@
 #include "Arduino.h"
 #include "EEPROM.h"
 
-// Switch buttons debouncing and return button events library
+// Buttons debouncing and button events library
 #include "Button.h"
 
 // Library for controlling LED blinking
@@ -61,7 +61,7 @@
     #define STATUS_MESSAGE        0x10 // Playing message
     #define STATUS_PLAY_DEFAULT   0x40 // Playing default ringtone
     #define STATUS_PLAY_TEST      0x80 // Playing ringtone via Test
-    #define STATUS_CARD_REMOVED   0x20
+    #define STATUS_CARD_REMOVED   0x20 // MicroSD card is removed
 
 // Gong array index
     
@@ -99,21 +99,6 @@
     #define MESSAGE_RESET_BELL              140 // "Bol vykonaný reset zvončeka"
     #define MESSAGE_DEFAULT_GONG            255 // "Predvolené zvonenie - použije sa ak požadované zvonenie nie je k dispozícii"
 
-// buttons text
-    #define FOLDER_BUTTONS                  52 //Buttons messages folder number
-
-    #define MESSAGE_BUTTON_PREVIOUS         1
-    #define MESSAGE_BUTTON_NEXT             2
-    #define MESSAGE_BUTTON_PREVIOUS_FOLDER  3
-    #define MESSAGE_BUTTON_NEXT_FOLDER      4
-    #define MESSAGE_BUTTON_MENU             5
-    #define MESSAGE_BUTTON_TEST             6
-    #define MESSAGE_BUTTON_VOLUME_DOWN      7
-    #define MESSAGE_BUTTON_VOLUME_UP        8
-    #define MESSAGE_BUTTON_CANCEL           9
-    #define MESSAGE_BUTTON_SAVE            10
-    #define MESSAGE_BUTTON_GONG            11
-
 // Blink status
 
     #define BLINK_IDLE      0
@@ -124,6 +109,7 @@
 
 
 // Other
+
     #define DEFAULT_VOLUME 20   
     #define VOLUME_STEP     5
     #define VOLUME_MIN      10
@@ -158,11 +144,11 @@
   const unsigned int blink_missing_default_gong[] = {LED_BLINK_INFINITY_MODE, 50, 50, 0};
   const unsigned int blink_general_error[] =  {LED_BLINK_INFINITY_MODE, 50, 50, 0};
   
-// Info structure for Gong
+// settings structure for Gong
 
 struct GongSettings {
     uint8_t folder; //folder number 01-09
-    uint8_t file;   //file number 000-255
+    uint8_t file;   //file 001-255
     uint8_t mode;   //playmode MODE_ONE | MODE_RANDOM | MODE_NEXT
     uint8_t volume; //volume 0-30
     bool first;     //first file in folder - "left margin"
@@ -172,9 +158,6 @@ struct GongSettings {
 
 
 // Timer
-
-// time at ms for temporary settings
-
 
 struct Timer {
   public:
@@ -217,6 +200,7 @@ struct Timer {
 
 
 // Prototypes of Action functions. These are the functions that are called on the button event
+
   void playAction(bool test = false); //test=true - test mode
   void stopAction();
   void testAction();
@@ -230,6 +214,7 @@ struct Timer {
   void saveAction();
 
 // Prototypes other function
+
   void stop(); //stop playing
   void play(uint8_t folder , uint8_t file); //play file/folder
   void prevFile(); // set previous file in current folder
@@ -257,7 +242,7 @@ struct Timer {
   void printStatus(int status);
 
   
-// Button switch instances
+// Button instances
   RealButton btnPrev(PIN_BTN_PREVIOUS);
   RealButton btnNext(PIN_BTN_NEXT);
   RealButton btnMode(PIN_BTN_MENU);
@@ -293,13 +278,13 @@ struct Timer {
 /// @brief Main SETUP function
 void setup() {
   
-  Serial1.begin(9600); //DFPlayer
+  Serial1.begin(9600);  //DFPlayer
   Serial.begin(115200); //Serial debug
   led.begin(PIN_LED, OFF);
  
-  T("Start TinTinnabulum A.00.03"); NL; NL;
+  NL; T("Start TinTinnabulum A.00.03"); NL; NL;
   
-  // switch buttons starting 
+  // Buttons starting 
   btnPrev.start();
   btnNext.start();
   btnMode.start();
@@ -426,19 +411,20 @@ void loop() {
       saveAction();
     }   
   }
+    // unblock buttons if status is idle min. 2 sec.
       unblockLockedButtons();
 
     // Update DFR0299 Player
       playerUpdate();
-
   
-      // Update buttons
+    // Update buttons
       btnPrev.update();
       btnNext.update();
       btnMode.update();
       btnStop.update();
       btnGong.update();
  
+    // Update LED blinking
       led.update();
 
   if (status == STATUS_IDLE) {
