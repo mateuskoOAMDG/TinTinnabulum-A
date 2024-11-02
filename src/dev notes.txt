@@ -19,3 +19,5 @@ BUG - corrupted Serial communication
 2024/10/31
     - dorobené save, load, card insert/remove   
     - beta :)     
+    BUG: oznam "Prázdny priečinok" pri stlačení NEXT po stlačení Test
+    OK : Priradenie gong_index = EDIT, keď sa stlačí niektoré tlačidlo <>M
