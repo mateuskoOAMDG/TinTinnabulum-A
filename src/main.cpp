@@ -220,7 +220,8 @@ struct Timer {
   void volumeUp(); //volume up
   void volumeDown(); //volume down
   void tryReset(); // wait 10sec and then reset
-  void init_gong(); // initialize machine
+  void init_gong(); // initialize gong structure
+  void init_general(); // general initialize
   void unblockLockedButtons();
   void blink(int status);
   bool load(); // loads settings from EEPROM
@@ -275,31 +276,9 @@ struct Timer {
 /// @brief Main SETUP function
 void setup() {
   
-  Serial1.begin(9600);  //DFPlayer
-  Serial.begin(115200); //Serial debug
-  led.begin(PIN_LED, OFF);
- 
-  NL; T(VERSION); NL; NL;
+  init_general(); // init doorbell 
   
-  // Buttons starting 
-  btnPrev.start();
-  btnNext.start();
-  btnMode.start();
-  btnStop.start();
-  btnGong.start();
-  
-  editTimer.begin(EDIT_TIME);
- 
-  // Initialize player
-  while ( !myDFPlayer.begin(Serial1, true, true)) {
-   led.blink(blink_player_error);
-   while(led.isBlinking) led.update();
-  };
-  
-  myDFPlayer.setTimeOut(500);
-  myDFPlayer.volume(DEFAULT_VOLUME);
-  
-  init_gong(); // initialize control variables
+  // try load settings from EEPROM
   if (!load()) {
     delay(100);
     while(getBusy());
@@ -506,6 +485,40 @@ int getFileCountsInFolder(uint8_t folder) {
       return count;
 }
 
+
+/// @brief Main Initialization
+void init_general() {
+  
+  Serial1.begin(9600);  //DFPlayer
+  Serial.begin(115200); //Serial debug
+  led.begin(PIN_LED, OFF);
+ 
+  NL; T(VERSION); NL; NL;
+  
+  // Buttons starting 
+  btnPrev.start();
+  btnNext.start();
+  btnMode.start();
+  btnStop.start();
+  btnGong.start();
+  
+  editTimer.begin(EDIT_TIME);
+
+  // Initialize player
+  while ( !myDFPlayer.begin(Serial1, true, true)) {
+   led.blink(blink_player_error);
+   while(led.isBlinking) led.update();
+  };
+ 
+  myDFPlayer.setTimeOut(500);
+  myDFPlayer.volume(DEFAULT_VOLUME);
+  
+  init_gong(); // initialize gong structure
+ 
+  blink_status = BLINK_IDLE;
+  
+}
+
 /// @brief Initializing the doorbell settings
 void init_gong() {
    
@@ -569,7 +582,7 @@ void tryReset() {
   unsigned int timer = millis();
   bool doReset = true;
 
-  // wait 10 sec
+  // wait 10 sec. (RESET_TIME)
   while ( ((unsigned int) millis()) - timer  < RESET_TIME) {
     if (!btnStop.pressed() || !btnMode.pressed() && !btnPrev.pressed() && !btnNext.pressed()) {
       doReset = false;
@@ -583,22 +596,31 @@ void tryReset() {
   }
 
   if (doReset) {
-    setup();
-    init_gong();
+    
+    stop();
+    init_general();
     save();
-    status = STATUS_MESSAGE;
-    play(FOLDER_MESSAGE, MESSAGE_RESET_BELL);
+    
+    
 
-    int event = playerEvent();
-    while (event == PLAYER_NO_EVENT || event == PLAYER_BUSY_OFF) {
-      event = playerEvent();
-      led.update();
-    }
-    while(getBusy()) { //wait for end play jingel
-      led.update();
-    }
+    led.blink(blink_start);
 
+    
+
+    while (getBusy() || btnStop.pressed() || btnMode.pressed() || btnPrev.pressed() || btnNext.pressed()) { //wait for end play jingel
+      led.update();
+      btnPrev.update();
+      btnNext.update();
+      btnStop.update();
+      btnMode.update();
+    }
+    btnPrev.reset();
+    btnNext.reset();
+    btnStop.reset();
+    btnMode.reset();
+    myDFPlayer.playFolder(FOLDER_MESSAGE, MESSAGE_RESET_BELL);
   }
+  
 }
 
 /// @brief The function unlocks the buttons after 2 seconds of player inactivity
@@ -1176,7 +1198,7 @@ bool load() {
   }
   else {
     T("ERROR"); NL;
-    T("!!! RESET DOORBELL !!!"); NL;
+    T("!!! RESET SETTINGS !!!"); NL;
 
     init_gong();
     save();
