@@ -1,9 +1,10 @@
 
-/// @name TinTinNabulum A.00.03
+/// @name TinTinNabulum A.00.05
 /// @brief Melodic doorbell with DFPlayer Mini DFR0299 and ATtiny1624 
-/// @date 2024/10/31
-/// @author m$o, mateusko.oamdg@outlook.com
+/// @date 2024/11/01
+/// @author (c) Martin Janček, mateusko.oamdg@outlook.com
  
+#define VERSION "TinTinNabulum 00.00.05"
 
 #include "Arduino.h"
 #include "EEPROM.h"
@@ -101,23 +102,22 @@
 
 // Blink status
 
-    #define BLINK_IDLE      0
-    #define BLINK_EDIT      1
-    #define BLINK_PLAY      2
-    #define BLINK_MISSING_DEFAULT_GONG 3
-    #define BLINK_GENERAL_ERROR 4
+    #define BLINK_IDLE                  0
+    #define BLINK_EDIT                  1
+    #define BLINK_PLAY                  2
+    #define BLINK_MISSING_DEFAULT_GONG  3
+    #define BLINK_GENERAL_ERROR         4
 
 
 // Other
 
-    #define DEFAULT_VOLUME 20   
-    #define VOLUME_STEP     5
-    #define VOLUME_MIN      10
-    #define VOLUME_MAX      30
-    #define RESET_TIME     10000 
-    #define LOCK_BUTTONS_TIME 2000 
-    #define EDIT_TIME 20000ul //20 sec
-
+    #define DEFAULT_VOLUME       20   // default volume  , allowed values: 10-30
+    #define VOLUME_STEP           5   // volume increase/decrease step (1-30)
+    #define VOLUME_MIN           10   // minimum  volume (0-30)
+    #define VOLUME_MAX           30   // maximum volume (0-30) 
+    #define RESET_TIME        10000   // the time required to press the buttons to trigger the doorbell reset (10 sec.)
+    #define LOCK_BUTTONS_TIME  3000   // time interval for automatic unlocking of buttons (3 sec.)
+    #define EDIT_TIME         20000ul // duration of editing mode (20 sec.)
 
 
 #ifdef DEBUG_ON
@@ -131,11 +131,9 @@
     #define T(x)
     #define D(x)
     #define H(x)
-
 #endif
 
-
-// LedBlink pattern
+// LedBlink patterns
   const unsigned int blink_start[] = {LED_BLINK_REPEAT_MODE | 5, 100, 100, 100, 100, 100, 500, 0};
   const unsigned int blink_player_error[] = {LED_BLINK_TIME_MODE | 2000, 20, 20, 0};
   const unsigned int blink_edit[] = {LED_BLINK_INFINITY_MODE, 1000, 50, 0};
@@ -157,7 +155,7 @@ struct GongSettings {
 };
 
 
-// Timer
+// Timer structure
 
 struct Timer {
   public:
@@ -195,8 +193,6 @@ struct Timer {
       }
     }
 };
-
-
 
 
 // Prototypes of Action functions. These are the functions that are called on the button event
@@ -252,15 +248,16 @@ struct Timer {
   // DFRPlayer instance
   DFRobotDFPlayerMini myDFPlayer;
 
-  // Led blink instance
+  // LED blink instance
   LedBlink led;
-
+  
+  // LED blink status
   int blink_status = BLINK_IDLE;
 
   // Status of machine
   uint8_t status = STATUS_IDLE;  
 
-  // Traffic light - waiting for player response (blocking buttons)
+  // Traffic light - waiting for player response (lock buttons)
   bool wait_for_player_response = false; 
 
   struct GongSettings gong[GONGS]; //saved settings
@@ -282,7 +279,7 @@ void setup() {
   Serial.begin(115200); //Serial debug
   led.begin(PIN_LED, OFF);
  
-  NL; T("Start TinTinnabulum A.00.03"); NL; NL;
+  NL; T(VERSION); NL; NL;
   
   // Buttons starting 
   btnPrev.start();
@@ -300,7 +297,7 @@ void setup() {
   };
   
   myDFPlayer.setTimeOut(500);
-  myDFPlayer.volume(25);
+  myDFPlayer.volume(DEFAULT_VOLUME);
   
   init_gong(); // initialize control variables
   if (!load()) {
@@ -316,11 +313,13 @@ void setup() {
 /// @brief Main LOOP function
 void loop() {
   
-   while (status == STATUS_CARD_REMOVED) {
-        led.update();
-        playerUpdate();
-      }
+  // If the card is removewd, wait for it to be inserted
+  while (status == STATUS_CARD_REMOVED) {
+    led.update();
+    playerUpdate();
+  }
 
+  // If the RESET key combination is pressed, call the reset function
   if (btnStop.pressed() && btnMode.pressed()) 
     tryReset();
    
@@ -329,6 +328,7 @@ void loop() {
       playAction();
   } 
 
+  // Button press operations
   if (!wait_for_player_response) {
     if (btnPrev.pressed() || btnNext.pressed() || btnMode.pressed()) {
       editTimer.start();  // restart timer if btn 1|2|3 is pressed
@@ -336,10 +336,10 @@ void loop() {
         edit_flag = true;
         
         gong[EDITED] = gong[NORMAL]; // copy settings
-        gong_index = EDITED;
-
+        
         blink(BLINK_EDIT);
       }
+      gong_index = EDITED;
     } 
     else {
         if (editTimer.isTime() || btnStop.onClick(false)) { // if btnStop.onClick or Timer ends
@@ -351,7 +351,6 @@ void loop() {
           led.stop();
         } 
     }
-
     
     if(btnMode.pressed()) {
       if(btnPrev.onClick()) {
@@ -411,21 +410,21 @@ void loop() {
       saveAction();
     }   
   }
-    // unblock buttons if status is idle min. 2 sec.
-      unblockLockedButtons();
+  // unblock buttons if status is idle min. 2 sec.
+  unblockLockedButtons();
 
-    // Update DFR0299 Player
-      playerUpdate();
-  
-    // Update buttons
-      btnPrev.update();
-      btnNext.update();
-      btnMode.update();
-      btnStop.update();
-      btnGong.update();
- 
-    // Update LED blinking
-      led.update();
+  // Update DFR0299 Player
+  playerUpdate();
+
+  // Update buttons
+  btnPrev.update();
+  btnNext.update();
+  btnMode.update();
+  btnStop.update();
+  btnGong.update();
+
+  // Update LED blinking
+  led.update();
 
   if (status == STATUS_IDLE) {
     if (edit_flag) {
@@ -476,9 +475,9 @@ void blink(int status) {
 }
 
 /// @brief The function returns the moment of switching the BUSY state
-/// @param reset 
+/// @param reset If the value is false, the current state is not deleted
 /// @return BUSY state: -1 - to OFF, 1 - to ON, 0 - the BUSY state has not changed
-int edgeBusy(bool reset = true) {
+int edgeBusy(bool reset) {
   static bool previous_busy = false;
   bool busy = digitalRead(PIN_BUSY) == LOW;
   
@@ -501,15 +500,15 @@ bool getBusy() {
 /// @param folder Folder number
 /// @return Number of files
 int getFileCountsInFolder(uint8_t folder) {
-      myDFPlayer.readFileCountsInFolder(folder); //deBUG zzz need read 2x!
-      return myDFPlayer.readFileCountsInFolder(folder);
+      int count = myDFPlayer.readFileCountsInFolder(folder); //deBUG zzz need read 2x!
+      count = myDFPlayer.readFileCountsInFolder(folder);
+      T("> readFileCountsInFolder("); D(folder); T(") = "); D(count); NL;
+      return count;
 }
 
-/// @brief Initializing settings
+/// @brief Initializing the doorbell settings
 void init_gong() {
-  // loading settings from eeprom
- 
-  // index 0 = EDITED
+   
   gong[EDITED].file = 1;
   gong[EDITED].folder = 1;
   gong[EDITED].first = true;
@@ -533,18 +532,10 @@ void init_gong() {
 /// @param file File number (1 -255)
 void play(uint8_t folder, uint8_t file) {
   
-  T("> PLAY");
-  T(", folder = ");
-  D(folder);
-  T(", file = ");
-  D(file);
-  NL;
+  T("> PLAY");  T(", folder = "); D(folder); T(", file = ");  D(file); NL;
 
   stop();
-  T("PLAYER> busy switch to ");
-  int b;
-  b = edgeBusy();
-  D(b); NL;
+  T("PLAYER> busy switch to "); D(edgeBusy()); NL;
 
   T("> DFR playFolder()! ");
   wait_for_player_response = true;
@@ -565,7 +556,7 @@ void stop() {
 
   while(getBusy());
 
-  timer = (unsigned int)millis() - timer; 
+  timer = (unsigned int) millis() - timer; 
   T("> (stop) - delay time: ");
   D(timer);
   T(" ms");
@@ -574,22 +565,30 @@ void stop() {
 
 /// @brief The function checks for pressing the O and M buttons for 10 seconds, then performs a reset
 void tryReset() {
-  // wait 10 sec
+  
   unsigned int timer = millis();
   bool doReset = true;
 
+  // wait 10 sec
   while ( ((unsigned int) millis()) - timer  < RESET_TIME) {
-    if (!btnStop.pressed() || !btnMode.pressed()) {
+    if (!btnStop.pressed() || !btnMode.pressed() && !btnPrev.pressed() && !btnNext.pressed()) {
       doReset = false;
       break;
     }
     
+    btnPrev.update();
+    btnNext.update();
     btnStop.update();
     btnMode.update();
   }
 
   if (doReset) {
     setup();
+    init_gong();
+    save();
+    status = STATUS_MESSAGE;
+    play(FOLDER_MESSAGE, MESSAGE_RESET_BELL);
+
     int event = playerEvent();
     while (event == PLAYER_NO_EVENT || event == PLAYER_BUSY_OFF) {
       event = playerEvent();
@@ -598,6 +597,7 @@ void tryReset() {
     while(getBusy()) { //wait for end play jingel
       led.update();
     }
+
   }
 }
 
@@ -792,7 +792,6 @@ void testAction() {
 
 void prevFileAction() {
   NL; T("* Action: Previous File Action"); NL;
-  //play(FOLDER_BUTTONS, MESSAGE_BUTTON_PREVIOUS);
   prevFile();
 }
 
@@ -802,17 +801,13 @@ void nextFileAction() {
 }
 
 void prevFolderAction() {
-  //T("* Action: Previous Folder Action"); NL;
-  //play(FOLDER_BUTTONS, MESSAGE_BUTTON_PREVIOUS_FOLDER);
   NL; T("* Action: Previous Folder Action"); NL;
   prevFolder();
 }
 
 void nextFolderAction() {
-  //T("* Action: Next Folder Action"); NL;
-  //play(FOLDER_BUTTONS, MESSAGE_BUTTON_NEXT_FOLDER);
   NL; T("* Action: Next Folder Action"); NL;
-  nextFolder();
+    nextFolder();
 }
 
 void volumeUpAction() {
@@ -827,9 +822,9 @@ void volumeDownAction() {
 
 void nextPlayModeAction() {
   NL; T("* Action: Next Play Mode Action"); NL;
-  //play(FOLDER_BUTTONS, MESSAGE_BUTTON_MENU);
+
+  //Cyclic toggle mode (there are 3 modes: MODE_ONE | MODE_NEXT | MODE_RANDOM )
   
-  //Cyclic switch mode (there are 3 modes 0,1,2)
   gong[EDITED].mode ++;
   gong[EDITED].mode %= 3;
   
@@ -904,6 +899,7 @@ void playerUpdate() {
             break;
           
           case STATUS_NEXT_FILE:
+              T("> playerUpdate(), FILE ERROR, STATUS_NEXT_FILE gong_index = " ); D(gong_index); NL;
               if ((getFileCountsInFolder(gong[gong_index].folder)  < 1) || 
                   (gong[gong_index].file == 1) 
                  ) {
@@ -950,8 +946,8 @@ void playerUpdate() {
               blink(BLINK_MISSING_DEFAULT_GONG);
 
             break;
-          //other cases must by programmed (next, prev...)
-
+          
+            //other cases can by programmed here
         }
         break;
 
@@ -1120,7 +1116,7 @@ void volumeDown(){
   // Volume Up
   volume -= VOLUME_STEP;
 
-  // Correct
+  // Correction of settings
   if (volume < VOLUME_MIN + VOLUME_STEP - 1) volume = VOLUME_MIN;
   
   // Set
